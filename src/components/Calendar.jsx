@@ -7,17 +7,11 @@ class Calendar extends React.Component {
     nameDateMap: {}
   };
 
-  componentDidMount() {
+  componentWillMount() {
+    const { openDates } = this.props;
     setTimeout(() => {
       this.setState({
-        nameDateMap: {
-          1: 'boob',
-          2: 'boo',
-          3: 'baab',
-          4: 'Bent',
-          5: 'Bård',
-          6: 'Foo'
-        }
+        nameDateMap: openDates
       })
     }, 100)
   }

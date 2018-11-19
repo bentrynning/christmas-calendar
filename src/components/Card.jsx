@@ -3,6 +3,7 @@ import React from 'react';
 const Card = ({ number, name, open }) => (
   <div className={`card ${name ? 'card--open' : ''}`}>
     <div className="card__face card__front">
+    <span className="snowflake"></span>
       <div className="card__face card__inner">
         {number}
       </div> 
