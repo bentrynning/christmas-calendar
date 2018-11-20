@@ -1,11 +1,12 @@
 body {
-  background: linear-gradient(180deg, rgba(143,209,204,1) 0%, rgba(255,255,255,1) 100%);
   font-family: 'Lobster', cursive;
   height: 100%;
+  overflow-x: hidden; 
 }
 
 .app {
   text-align: center;
+  margin-bottom: 50px;
 }
 
 .header {
@@ -25,6 +26,7 @@ body {
   justify-content: flex-start;
   margin: auto;
   max-width: 1280px;
+  padding: 0 20px;
 }
 .btn {
   display: block;
@@ -45,6 +47,7 @@ body {
   left: 0;
   right: 0;
   z-index: 0;
+  background: linear-gradient(180deg, rgba(143,209,204,1) 0%, rgba(255,255,255,1) 100%);
 }
 
 .calendar {
