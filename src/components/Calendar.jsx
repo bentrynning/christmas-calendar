@@ -7,10 +7,18 @@ class Calendar extends React.Component {
   };
 
   render() {
+    const { openDates, onClickHandler, notChristmas } = this.props;
     return (
       <main className="calendar">
         {this.state.dates.map((date, i) => (
-          <Card key={`date-${i}`} number={date} name={this.props.openDates[date]}/>
+          <div className="card__wrap">
+            <Card 
+            key={`date-${i}`} 
+            number={date}
+            name={openDates[date]}
+            notChristmas={notChristmas}
+            onClick={onClickHandler}/>
+          </div>
         ))}
       </main>
     );

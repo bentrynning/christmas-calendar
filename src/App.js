@@ -9,12 +9,14 @@ import config from './config.json';
 firebase.initializeApp(config);
 
 const firestore = firebase.firestore();
+firestore.settings({timestampsInSnapshots: true});
+
 const datesDocRef = firestore.doc('calendar/dates');
 const usersDocRef = firestore.doc('calendar/users');
 
 class App extends Component {
   state = {
-    names: ['bent', 'Håkon', 'Jon', 'Mira', 'Martin', 'Lorita', 'Thomas', 'Julij', 'Anders', 'Evind', 'Emil', 'Eli', 'Kristin', 'Marcus', 'Thin', 'Sigurd', 'Fredrik'],
+    names: [],
     openDates: {}
   }
 
@@ -26,33 +28,53 @@ class App extends Component {
         })
        }
     });
+    usersDocRef.get().then((userDoc) => {
+      if(userDoc && userDoc.exists) {
+        const selectedNames = Object.values(this.state.openDates).map(name => name);
+        const names = userDoc.data().names.filter(name => selectedNames.indexOf(name) === -1)
+        this.setState({names: names});
+       }
+    });
   }
 
-  openCurrentDate = () => {
-    const doDaysDate = new Date().getDate();
-    const selectedNumber = Math.floor(Math.random() * (this.state.names.length + 1)) ;
-    const doDaysName = this.state.names[selectedNumber];
-    datesDocRef.set({
-      ...this.state.openDates,
-      [doDaysDate]: doDaysName
-    })
-    .then(() => console.log('Save complete'))
-    .catch(error => console.log(`Save faild: ${error}`))
+  openCard = (number) => {
+    const currentDate = new Date().getDate();
+    const month = new Date().getMonth();
+    if(month < 12) {
+      this.setState({
+        notChristmas: true
+      })
+      return
+    }
+    if(number <= currentDate) {
+      const randomNumber = Math.floor(Math.random() * this.state.names.length) ;
+      const selectedName = this.state.names[randomNumber];
+      datesDocRef.set({
+        ...this.state.openDates,
+        [number]: selectedName
+      })
+      .then(() => console.log('Save dates complete'))
+      .catch(error => console.log(`Save dates faild: ${error}`))
+      const filteredNames = this.state.names.filter(name => name !== selectedName);
+      this.setState({names: filteredNames})
+    }
+    
   }
 
   render() {
-    // const openDates = this.state.names.reduce((acc, name, i) => ({...acc, [i]:name}))
-    const { openDates } = this.state;
+    const { openDates, notChristmas } = this.state;
     return (
       <div className="app">
         <header className="header">
           <div className="header__content">        
             <h1>Serviceteam julekalender</h1>
-            <button onClick={this.openCurrentDate} className="btn">Åpne luke</button>
           </div>
         </header>
         <Canvas />
-        <Calendar openDates={openDates}/>
+        <Calendar 
+          notChristmas={notChristmas}
+          openDates={openDates}
+          onClickHandler={this.openCard}/>
       </div>
     );
   }
