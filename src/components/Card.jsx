@@ -1,7 +1,5 @@
 import React from 'react';
-import { ReactComponent as SnowFlake } from '../assets/snowflake-1.svg';
-
-const random = (number) => Math.floor((Math.random() * number) + 20);
+import { CSSTransitionGroup } from 'react-transition-group';
 
 class Card extends React.Component {
   state = {
@@ -12,7 +10,7 @@ class Card extends React.Component {
   openCard = (number) => {
     const {names, onUpdateCalendar} = this.props;
 
-    const randomNumber = Math.floor((Math.random() * names.length) * 1000)  ;
+    const randomNumber = Math.floor((Math.random() * names.length) * 500)  ;
     const liste = [...names];
 
     this.setState({
@@ -25,17 +23,11 @@ class Card extends React.Component {
       this.setState({
         list: liste
       })
-    }, 100)
+    }, 60)
 
     setTimeout(()=> {
       clearInterval(spinn);
-      
-      setTimeout(() => {
-        this.setState({
-          draw: false
-        })
-        onUpdateCalendar(number, liste[1]);
-      }, 2000);
+      onUpdateCalendar(number, liste[1]);
     }, randomNumber);
   }
 
@@ -45,25 +37,33 @@ class Card extends React.Component {
 
     return(
       <div className={`card__wrap`}>
-        <div className={`card ${name ? 'card--open' : ''}`}>
+        <div className={`card ${name || draw ? 'card--open' : ''}`}>
           <div className="card__face card__front">
             <div className="card__face card__inner">
-              <span className="snowflake" style={{
-                top: `${random(160)}px`,
-                right: `${random(160)}px`,
-                maxWidth: `${random(60)}px`
-              }}>
-                <SnowFlake style={{fill: 'white'}} />
-              </span>
               {number}
             </div> 
           </div>
           <div className="card__face card__back">
-            {name}
-            {!name && !draw && <button onClick={() => this.openCard(number)} className="card__button">Åpne luke</button> }
-            <div className={`name-list ${draw ? 'name-list--show':''}`}>
-              {list.map(name => <div key={name} className="name-list__name">{name}</div>)}
-            </div>
+            <CSSTransitionGroup
+              transitionName="example"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}>
+              {name && (<p>{name}</p>)}
+            </CSSTransitionGroup>
+
+            {!draw && !name && <button onClick={() => this.openCard(number)} className="card__button">Åpne luke</button> }
+            
+            <CSSTransitionGroup
+              transitionName="example"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={0}>
+              {draw && !name && (
+                <div key="example" className="name-list">
+                  {list.map(name => <div key={name} className="name-list__name">{name}</div>)}
+                </div>
+              )}
+            </CSSTransitionGroup>
+            
           </div>
         </div>
       </div>

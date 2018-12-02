@@ -28,6 +28,7 @@ body {
   max-width: 1280px;
   padding: 0 20px;
 }
+
 .card__button {
   display: block;
   background: #00a5d1;
@@ -65,14 +66,9 @@ body {
 }
 
 .name-list {
-  display: none;
   overflow: hidden;
   width: 300px;
   height: 300px;
-}
-
-.name-list--show {
-  display: block;
 }
 
 .name-list__name {
@@ -81,7 +77,6 @@ body {
 
 .card {
   margin: auto;
-  position: relative;
   font-weight: bold;
   height: 16vw;
   max-height: 200px;
@@ -132,8 +127,30 @@ body {
   background-color: #f8f9f2;
   transform: rotateY(-180deg);
   overflow: hidden;
+  transition-timing-function: cubic-bezier(.175, .885, .32, 1.275);
+  transition-duration: 0.5s;
+  transition-property: opacity;
 }
 
 .card.card--open{
   transform: rotateY(-180deg);
+}
+
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+  display: none;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }
