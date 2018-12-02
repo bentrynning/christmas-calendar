@@ -16,7 +16,7 @@ const usersDocRef = firestore.doc('calendar/users');
 
 class App extends Component {
   state = {
-    names: [],
+    names: undefined,
     openDates: {}
   }
 
@@ -37,32 +37,20 @@ class App extends Component {
     });
   }
 
-  openCard = (number) => {
-    const currentDate = new Date().getDate();
-    const month = new Date().getMonth();
-    if(month < 12) {
-      this.setState({
-        notChristmas: true
-      })
-      return
-    }
-    if(number <= currentDate) {
-      const randomNumber = Math.floor(Math.random() * this.state.names.length) ;
-      const selectedName = this.state.names[randomNumber];
-      datesDocRef.set({
-        ...this.state.openDates,
-        [number]: selectedName
-      })
-      .then(() => console.log('Save dates complete'))
-      .catch(error => console.log(`Save dates faild: ${error}`))
-      const filteredNames = this.state.names.filter(name => name !== selectedName);
-      this.setState({names: filteredNames})
-    }
+  updateCalendar = (number, selectedName) => {
+    datesDocRef.set({
+      ...this.state.openDates,
+      [number]: selectedName
+    })
+    .then(() => console.log('Save dates complete'))
+    .catch(error => console.log(`Save dates faild: ${error}`))
+    const filteredNames = this.state.names.filter(name => name !== selectedName);
+    this.setState({names: filteredNames})
     
-  }
+  } 
 
   render() {
-    const { openDates, notChristmas } = this.state;
+    const { openDates, names } = this.state;
     return (
       <div className="app">
         <header className="header">
@@ -72,9 +60,9 @@ class App extends Component {
         </header>
         <Canvas />
         <Calendar 
-          notChristmas={notChristmas}
           openDates={openDates}
-          onClickHandler={this.openCard}/>
+          names={names}
+          onUpdateCalendar={this.updateCalendar}/>
       </div>
     );
   }
